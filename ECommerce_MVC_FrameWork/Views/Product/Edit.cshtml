@@ -1,0 +1,30 @@
+﻿@model ECommerce_MVC_FrameWork.Models.Product
+
+@{
+    ViewBag.Title = "Edit Product";
+}
+
+<h2>Edit Product</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ProductId)
+
+    <div class="form-group">
+        <label>Name</label>
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label>Price</label>
+        @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-outline-warning">Update</button>
+}
+<p>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-outline-secondary" })
+</p>

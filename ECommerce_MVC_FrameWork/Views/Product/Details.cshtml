@@ -1,0 +1,17 @@
+﻿@model ECommerce_MVC_FrameWork.Models.Product
+
+@{
+    ViewBag.Title = "Product Details";
+}
+
+<h2>Product Details</h2>
+<div>
+    <h4>Name: @Model.Name</h4>
+    <h4>Price: $@Model.Price</h4>
+    <h4>Category: @Model.Description</h4>
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ProductId }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary" })
+</p>

@@ -1,0 +1,22 @@
+﻿@model ECommerce_MVC_FrameWork.Models.Product
+
+@{
+    ViewBag.Title = "Delete Product";
+}
+
+<h2>Are you sure you want to delete this product?</h2>
+
+<div>
+    <h4>Name: @Model.Name</h4>
+    <h4>Price: $@Model.Price</h4>
+    <h4>Category: @Model.Description</h4>
+</div>
+
+@using (Html.BeginForm("DeleteConfirmed", "Product", new { id = Model.ProductId }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Delete</button>
+}
+<p>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-outline-secondary" })
+</p>

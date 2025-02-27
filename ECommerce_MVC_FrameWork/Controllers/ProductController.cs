@@ -3,6 +3,7 @@ using ECommerce_MVC_FrameWork.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -11,97 +12,99 @@ namespace ECommerce_MVC_FrameWork.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
-        
+
         public ProductController()
         {
             _productService = new ProductService();
         }
 
-        public ActionResult GetAllProduct()
+        // GET: Product
+        public async Task<ActionResult> Index()
         {
-            try
-            {
-                return View(_productService.GetAllProduct());
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                // Return an error view or message
-                return View("Error", new HandleErrorInfo(ex, "Product", "GetAllProduct"));
-            }
+            var products = await _productService.GetAllProduct();
+            return View(products);
         }
 
-        public ActionResult GetProduct(int id)
+        // GET: Product/Details/5
+        public async Task<ActionResult> Details(int id)
         {
-            try
+            var product = await _productService.GetProduct(id);
+            if (product == null)
             {
-                return View(_productService.GetProduct(id));
+                return HttpNotFound();
             }
-            catch (Exception ex)
-            {
-                // Log the exception
-                // Return an error view or message
-                return View("Error", new HandleErrorInfo(ex, "Product", "GetProduct"));
-            }
+            return View(product);
         }
 
-        public ActionResult GetProductByName(string name)
+        // GET: Product/Create
+        public ActionResult Create()
         {
-            try
-            {
-                return View(_productService.GetProductByName(name));
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                // Return an error view or message
-                return View("Error", new HandleErrorInfo(ex, "Product", "GetProductByName"));
-            }
+            return View();
         }
 
-        public ActionResult AddProduct(Product product)
+        // POST: Product/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(Product product)
         {
-            try
+            if (ModelState.IsValid)
             {
-                _productService.AddProduct(product);
-                return RedirectToAction("GetAllProduct");
+                await _productService.AddProduct(product);
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
-            {
-                // Log the exception
-                // Return an error view or message
-                return View("Error", new HandleErrorInfo(ex, "Product", "AddProduct"));
-            }
+            return View(product);
         }
 
-        public ActionResult EditProduct(Product product)
+        // GET: Product/Edit/5
+        public async Task<ActionResult> Edit(int id)
         {
-            try
+            var product = await _productService.GetProduct(id);
+            if (product == null)
             {
-                _productService.UpdateProduct(product);
-                return RedirectToAction("GetAllProduct");
+                return HttpNotFound();
             }
-            catch (Exception ex)
-            {
-                // Log the exception
-                // Return an error view or message
-                return View("Error", new HandleErrorInfo(ex, "Product", "EditProduct"));
-            }
+            return View(product);
         }
 
-        public ActionResult DeleteProduct(int id)
+        // POST: Product/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Product product)
         {
-            try
+            if (ModelState.IsValid)
             {
-                _productService.DeleteProduct(id);
-                return RedirectToAction("GetAllProduct");
+                await _productService.UpdateProduct(product);
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
-            {
-                // Log the exception
-                // Return an error view or message
-                return View("Error", new HandleErrorInfo(ex, "Product", "DeleteProduct"));
-            }
+            return View(product);
         }
+
+        // GET: Product/Delete/5
+        public async Task<ActionResult> Delete(int id)
+        {
+            var product = await _productService.GetProduct(id);
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+            return View(product);
+        }
+
+        // POST: Product/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed(int id)
+        {
+            await _productService.DeleteProduct(id);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> Search(string name)
+        {
+            var products = await _productService.GetProductByName(name);
+            ViewBag.SearchTerm = name; 
+            return View("Index", products); 
+        }
+
     }
 }
